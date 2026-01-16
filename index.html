@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>好厝邊服務預約</title>
+    <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
+    <style>
+        body { font-family: "Microsoft JhengHei", sans-serif; display: flex; flex-direction: column; justify-content: center; align-items: center; height: 100vh; margin: 0; background-color: #f0f2f5; }
+        .loader { border: 5px solid #f3f3f3; border-top: 5px solid #06c755; border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin-bottom: 20px; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        p { color: #666; font-size: 16px; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="loader"></div>
+    <p>正在前往預約表單...</p>
+
+    <script>
+        // --- 設定區 (已自動填入您的資料) ---
+        var myLiffId = "2008808651-pPhLXTx5"; 
+        var googleFormUrl = "https://docs.google.com/forms/d/e/1FAIpQLSeXmnrHld98wRKLg3mHZxZx7uZNv4Wlo-q8JGLecipBOEsCqw/viewform?usp=pp_url&entry.1622971047=";
+        // -----------------------------------
+
+        function initializeApp() {
+            liff.init({ liffId: myLiffId })
+                .then(() => {
+                    if (!liff.isLoggedIn()) {
+                        liff.login();
+                    } else {
+                        liff.getProfile()
+                        .then(profile => {
+                            const userId = profile.userId;
+                            // 組合網址：原網址 + 等號 + LINE UserID
+                            window.location.replace(googleFormUrl + userId);
+                        })
+                        .catch((err) => {
+                            console.error('LIFF Error:', err);
+                            alert("無法取得 LINE 資料，請確認網路連線。");
+                        });
+                    }
+                })
+                .catch((err) => {
+                    console.error('LIFF Init failed:', err);
+                    alert("LIFF 初始化失敗，請確認 LIFF ID 設定是否正確。");
+                });
+        }
+        initializeApp();
+    </script>
+</body>
+</html>
